@@ -98,54 +98,56 @@ class Library {
 class Student {
   constructor(name){
     this.name = name;
+    this.marks = {};
   }
+
   setSubject(subjectName){
     this.subject[subjectName] = [];
   }
+
   addMark(mark, subjectName) {
-    if (this.mark < 1 && this.mark > 5){
+    if (mark < 1 || mark > 5){
       console.log("Ошибка, оценка должна быть числом от 1 до 5")
+      return
     }
-    if(this.mark === undefined && this.subject[subjectName] === undefined){ 
-      this.subject[subjectName] = [mark]; 
+
+    if(this.marks[subjectName]) {
+      this.marks[subjectName].push(mark)
     } else {
-      this.subject[subjectName].push(mark)
-      this.marks.push(mark)
+      this.marks[subjectName] = [mark];
     }
   }
   
-  addMarks(...marks,subjectName) {
+  addMarks(subjectName,...marks) {
     this.subject[subjectName] = [...this.subject[subjectName], ...marks]
   }
-  getAverageBySubject(){
 
-    if(this.subject(subjectName) === undefined){
-    return console.log("Предмет не существует")
+  getAverageBySubject(subjectName) {
+    if(this.marks[subjectName] !== undefined) {
+      let sum1 = this.marks[subjectName].reduce((sum,current) => sum + current)
+
+      return sum1 / this.marks[subjectName].length;
     }
-
-    let sub = this.subject(subjectName);
-    let sumMarks = 0;
     
-
-    for(let item in sub){
-      item += sumMarks;
-    }
-    let avgBySub = sumMarks / sub.length;
-    return avgBySub
+    console.log("Оценок нет");
   }
 
   getAverage() {
-    if (this.marks !== undefined) {
-      
-      let sum1 = this.marks.reduce((sum,current) => sum + current)
-  
-      return sum1 / this.marks.length;
+    let subjects = Object.keys(this.marks); 
+    let sum1 = 0;
+    
+    for (let i = 0; i < subjects.length; i++) {
+      let sub = subjects[i];
+
+      sum1 += this.getAverageBySubject(sub)
     }
+
+    return sum1 / subjects.length;
   };
   
   exclude(reason) {
-        this.excluded = reason;
-        delete this.subject;
-        delete this.marks;
-      }
+    this.excluded = reason;
+    delete this.subject;
+    delete this.marks;
   }
+}
