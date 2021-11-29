@@ -27,18 +27,22 @@ function cachingDecoratorNew(func) {
   }
 }
 
-//задача №2
+//задача 2
 function debounceDecoratorNew(func, ms) {
   let isCooldown = false;
+  let currentTimeout = null;
 
   return function () {
+    if(currentTimeout) {
+      clearTimeout(currentTimeout)
+    }
+    currentTimeout = setTimeout(() => (isCooldown = false), ms);
+    
     if (isCooldown) return;
 
     func.apply(this, arguments);
 
     isCooldown = true;
-
-    setTimeout(() => (isCooldown = false), ms);
   };
 }
 
@@ -46,8 +50,14 @@ function debounceDecoratorNew(func, ms) {
 // задача №3
 function debounceDecorator2(func, ms) {
   let isCooldown = false;
+  let currentTimeout = null;
 
   const wrapper = function () {
+    if(currentTimeout) {
+      clearTimeout(currentTimeout)
+    }
+    currentTimeout = setTimeout(() => (isCooldown = false), ms);
+
     if (isCooldown) return;
 
     func.apply(this, arguments);
@@ -55,11 +65,9 @@ function debounceDecorator2(func, ms) {
     wrapper.count += 1;
 
     isCooldown = true;
-
-    setTimeout(() => (isCooldown = false), ms);
   };
 
   wrapper.count = 0
+
   return wrapper
 }
-
